@@ -1,0 +1,67 @@
+#menu {
+    max-width: 1200px;
+    margin: auto;
+    text-align: center;
+    margin-top: 125px;
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.products-container {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: center; 
+    gap: 20px;
+}
+
+/* Cada producto en su propia tarjeta */
+.product-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    width: 250px; 
+    text-align: center;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+}
+
+img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+h4 {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+p {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Botón más compacto */
+a {
+    display: inline-block;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    width: auto;
+}
+
+a:hover {
+    background: #0056b3;
+}
+

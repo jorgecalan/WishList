@@ -1,0 +1,31 @@
+.ImageMision{
+    background: url(../imagenes/Cook.gif);
+    background-size: cover;
+}
+body{
+    background: url(../imagenes/fondo.jpg);
+}
+.InfoVision{
+    background-color: white;
+    margin: 170px 50px 0px 100px;
+    text-align: justify;
+    padding: 20px;
+    display: flex;
+}
+.InfoVision h1{
+    text-align: center;
+}
+footer .Data{
+    background-color: white;
+    padding: 20px;
+    margin: 10px 50px 25px 100px;
+    display: flex;
+}
+.InfoVision img{
+    width: 525px;
+    height: 475px;
+    margin: 50px;
+}
+li{
+    list-style-type: square;
+}

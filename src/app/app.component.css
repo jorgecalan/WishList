@@ -1,0 +1,50 @@
+@import url(https://fonts.googleapis.com/css2?family=Madimi+One&family=Playfair+Display+SC:ital,wght@1,700&family=Rubik+Doodle+Shadow&family=Rubik+Doodle+Triangles&display=swap);
+@import url(https://fontello.com/);
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Madimi one', sans-serif;
+}
+body{
+    background-image: url(imagenes/fondo.jpg);
+    background-size: cover;
+}
+.header{
+    width: 100%;
+    height: 70px;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.container{
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+}
+.logo{
+    color: #fff;
+    font-weight: 400;
+    font-size: 50px;
+    margin-left: 10px;
+    text-align: center;
+    margin-top: 25px;
+}
+.container .menu{
+    float: right;
+    line-height: 70px;
+}
+.container .menu a{
+    display: inline-block;
+    padding: 15px 10px;
+    line-height: normal;
+    text-decoration: none;
+    color: #fff;
+    transition: all 0.3s ease;
+    border-bottom: 2px solid transparent;
+    font-size: 15px;
+}
+.container .menu a:hover{
+    border-bottom: 2px solid black;
+    padding: 5px 10px;
+}
