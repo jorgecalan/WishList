@@ -2,9 +2,6 @@
     background: url(../imagenes/Cook.gif);
     background-size: cover;
 }
-body{
-    background: url(../imagenes/fondo.jpg);
-}
 .InfoVision{
     background-color: white;
     margin: 170px 50px 0px 100px;

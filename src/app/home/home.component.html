@@ -1,37 +1,38 @@
-<!-- home.component.html -->
-<html>
-    <head> 
-        <title>
-            Productos
-        </title>
-    </head>   
-    <body>
-        <section id="menu">
-            <h2><strong>Nuestros Productos</strong></h2>
+<header>
+    <title>Productos</title>
+</header>
+
+<main>
+    <section id="menu">
+        <h2><strong>Nuestros Productos</strong></h2>
+
+        <!-- Sección de inicio de sesión -->
+        <div *ngIf="!user">  
+            <button (click)="loginWithGoogle()">Iniciar sesión con Google</button>
+        </div>
         
-            <div class="products-container">
-                <div *ngFor="let product of products; let i = index" class="product-card">
-                    <img [src]="product.imageUrl" alt="{{ product.name }}">
-        
-                    <h4 #productTitle>{{ product.name }}</h4>
-                    <p>{{ product.description }}</p>
-                    <p>{{ product.price }}</p>
-        
-                    <a [href]="getGoogleSearchUrl(i)" target="_blank">Buscar {{product.name}} en Google</a>
-        
-                    <div class="rating">
-                        <a *ngFor="let star of [1,2,3,4,5]" 
-                              (click)="rateProduct(product, star)"
-                              [class.filled]="star <= product.rating">
-                          &#9734;
-                        </a>
-                    </div>
-        
-                    <textarea [(ngModel)]="product.comment" placeholder="Dejanos saber tu opinion"></textarea>
-                    <button (click)="submitReview(product)">Enviar</button>
-                </div>
+        <!-- Sección de bienvenida y logout -->
+        <div *ngIf="user">
+            <h3>Bienvenido, {{ user.displayName }}</h3>
+            <button (click)="logout()">Cerrar sesión</button>
+        </div>
+
+        <!-- Contenedor de productos -->
+        <div class="products-container">
+            <div *ngFor="let product of arrayproducts; let i = index" class="product-card">
+                <img [src]="product.imageUrl" alt="{{ product.name }}">
+                <h4>{{ product.name }}</h4>
+                <p>{{ product.description }}</p>
+                <p>{{ product.price }}</p>    
+
+                <!-- Icono para agregar al wishlist -->
+                <i *ngIf="product.addedToWishList" class="fas fa-heart" (click)="handleRemoveWishList(product)"></i>
+                <i *ngIf="!product.addedToWishList" class="far fa-heart" (click)="handleAddWishList(product)"></i>
             </div>
-        </section>       
-    </body>
-</html>
+        </div>
+    </section>       
+</main>
+
+
+
 

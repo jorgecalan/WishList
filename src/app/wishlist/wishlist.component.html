@@ -1,0 +1,28 @@
+<header>
+    <title>Mi Wishlist</title>
+</header>
+
+
+    <section id="wishlist">
+        <h2><strong>Favoritos <h2 class="fas fa-heart"></h2></strong></h2>
+
+        <!-- Verificar si hay productos en la wishlist -->
+        <div class="products-container" *ngIf="wishlist$ | async as wishlist">
+            <ng-container *ngIf="wishlist.length > 0; else emptyWishlist">
+                <div *ngFor="let product of wishlist" class="product-card">
+                    <img [src]="product.imageUrl" alt="{{ product.name }}">
+                    <h4>{{ product.name }}</h4>
+                    <p>{{ product.description }}</p>
+                    <p>{{ product.price }}</p>
+        
+                    <i class="fas fa-trash" (click)="handleRemoveWishList(product)"></i>
+                </div>
+            </ng-container>
+        
+            <ng-template #emptyWishlist>
+                <p>No tienes productos en tu lista de deseos.</p>
+            </ng-template>
+        </div>
+    </section>
+
+

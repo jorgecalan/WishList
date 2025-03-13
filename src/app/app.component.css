@@ -1,13 +1,13 @@
 @import url(https://fonts.googleapis.com/css2?family=Madimi+One&family=Playfair+Display+SC:ital,wght@1,700&family=Rubik+Doodle+Shadow&family=Rubik+Doodle+Triangles&display=swap);
-@import url(https://fontello.com/);
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Madimi one', sans-serif;
+    background: url(imagenes/fondo.jpg);
 }
 body{
-    background-image: url(imagenes/fondo.jpg);
+    
     background-size: cover;
 }
 .header{

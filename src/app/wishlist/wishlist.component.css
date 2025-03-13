@@ -1,4 +1,4 @@
-#menu {
+#wishlist {
     max-width: 1200px;
     margin: auto;
     text-align: center;
@@ -29,6 +29,7 @@ h2 {
     display: flex;
     flex-direction: column; 
     align-items: center;
+    margin: 10px;
 }
 
 img {
@@ -62,7 +63,14 @@ i {
 i:hover {
     background: #0056b3;
 }
-.fa-heart {
+
+.fa-trash {
     cursor: pointer;
+    color: white;
+}
+.fa-heart{
     color: red;
+}
+section {
+    padding-left: 40px;
 }
