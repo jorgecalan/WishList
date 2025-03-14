@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { Observable, of, from } from 'rxjs';
+import { Observable, of} from 'rxjs';
 import { FirebaseService } from '../../services/firebase.service';
 import { AuthService } from '../../services/auth.service'; 
 import { CommonModule } from '@angular/common';
@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule]
 })
 export class WishlistComponent implements OnInit {
-  wishlist$: Observable<any[]> = of([]);  // Lista de productos en la wishlist
+  wishlist$: Observable<any[]> = of([]);
   user: any;
 
   private FirebaseService = inject(FirebaseService);
@@ -20,8 +20,10 @@ export class WishlistComponent implements OnInit {
   
   constructor() {}
 
+
+   // Obtener usuario y cargar la wishlist
   ngOnInit(): void {
-    // Obtener usuario y cargar la wishlist
+   
     this.authService.getUser().subscribe(user => {
       if (user) {
         this.user = user;
@@ -31,31 +33,27 @@ export class WishlistComponent implements OnInit {
   }
 
   // Método para cargar la wishlist
-
-
   loadWishlist(): void {
     if (this.user) {
       this.FirebaseService.getWishlist(this.user.uid).then(wishlist => {
-        this.wishlist$ = of(wishlist); // Ahora wishlist es un array con productos completos
+        this.wishlist$ = of(wishlist);
       });
     }
   }
   
 
   // Método para eliminar un producto de la wishlist
-  handleRemoveWishList(product: any): void {
-    if (this.user) {
-      this.FirebaseService.removeFromWishlist(this.user.uid, product.id)
-        .then(() => {
-          this.loadWishlist();
-        })
-        .catch(error => {
-          console.error('Error eliminando del wishlist:', error);
-        });
-    } else {
-      alert('Por favor, inicie sesión para quitar productos de su lista de deseos.');
+  async handleRemoveWishList(product: any) {
+    if (!this.user) {
+        alert('Por favor, inicie sesión para quitar productos de su lista de deseos.');
+        return;
     }
-  }
+    try {
+        await this.FirebaseService.removeFromWishlist(this.user.uid, product.id);
+        this.loadWishlist();
+    } catch (error) {
+        console.error('❌ Error eliminando del wishlist:', error);
+    }
 }
-
+}
 

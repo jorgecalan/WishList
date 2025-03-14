@@ -6,7 +6,6 @@
     <section id="wishlist">
         <h2><strong>Favoritos <h2 class="fas fa-heart"></h2></strong></h2>
 
-        <!-- Verificar si hay productos en la wishlist -->
         <div class="products-container" *ngIf="wishlist$ | async as wishlist">
             <ng-container *ngIf="wishlist.length > 0; else emptyWishlist">
                 <div *ngFor="let product of wishlist" class="product-card">
@@ -20,7 +19,7 @@
             </ng-container>
         
             <ng-template #emptyWishlist>
-                <p>No tienes productos en tu lista de deseos.</p>
+                <p>No tienes productos guardados en tus favoritos.</p>
             </ng-template>
         </div>
     </section>

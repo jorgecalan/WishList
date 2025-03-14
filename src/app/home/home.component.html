@@ -1,42 +1,41 @@
-<header>
-    <title>Productos</title>
-</header>
-
 <main>
     <section id="menu">
         <h2><strong>Nuestros Productos</strong></h2>
 
-       
-        <div id="Boxbutton" *ngIf="!user">  
-            <button class="GoogleButton" (click)="loginWithGoogle()">Iniciar sesión con Google</button>
-        </div>
-        
-       
-        <div id="Boxbutton" *ngIf="user">
-            <h3><strong>Bienvenido, {{ user.displayName }}</strong></h3>
-            <button class="GoogleButton" (click)="logout()">Cerrar sesión</button>
-        </div>
+        <!-- Sección de autenticación -->
+        <ng-container *ngIf="user; else loginTemplate">
+            <div id="Boxbutton">
+                <h3><strong>Bienvenido, {{ user.displayName }}</strong></h3>
+                <button class="auth-btn" (click)="logout()">Cerrar sesión</button>
+            </div>
+        </ng-container>
 
-        
+        <ng-template #loginTemplate>
+            <div id="Boxbutton">
+                <button class="auth-btn" (click)="loginWithGoogle()">Inicia sesion con Google para ver nuestros productos</button>
+            </div>
+        </ng-template>
+
+        <!-- Contenedor de productos -->
         <div class="products-container">
-            <div *ngFor="let product of arrayproducts; let i = index" class="product-card">
-                <img [src]="product.imageUrl" alt="{{ product.name }}">
+            <div *ngFor="let product of arrayproducts" class="product-card">
+                <img [src]="product.imageUrl" [alt]="product.name">
                 <h4>{{ product.name }}</h4>
                 <p>{{ product.description }}</p>
-                <p>{{ product.price }}</p>    
+                <p>{{ product.price}}</p>    
 
-                
-                <button (click)="handleAddWishList(product)" *ngIf="!product.addedToWishList">
-                    <i class="far fa-heart"></i> <!-- Corazón vacío -->
-                </button>
-                <button (click)="handleRemoveWishList(product)" *ngIf="product.addedToWishList">
-                    <i class="fas fa-heart"></i> <!-- Corazón lleno -->
-                </button>
-                
+             
+                <i 
+                    [class]="product.addedToWishList ? 'fas fa-heart' : 'far fa-heart'"
+                    (click)="toggleWishlist(product, !product.addedToWishList)">
+                </i>
+
             </div>
         </div>
     </section>       
 </main>
+
+
 
 
 

@@ -12,13 +12,13 @@ export class AuthService {
   // Iniciar sesión con Google
   async loginWithGoogle() {
     try {
-      const auth = getAuth();  // Obtenemos la instancia de autenticación
-      const provider = new GoogleAuthProvider();  // Proveedor de autenticación de Google
-      const result = await signInWithPopup(auth, provider);  // Usa 'signInWithPopup' para el inicio de sesión
-      console.log('Usuario logueado:', result.user);  // Información del usuario autenticado
-      return result.user;  // Devuelve el usuario
+      const auth = getAuth();  
+      const provider = new GoogleAuthProvider();  
+      const result = await signInWithPopup(auth, provider);  
+      console.log('Usuario logueado:', result.user);  
+      return result.user; 
     } catch (error) {
-      console.error('Error al iniciar sesión con Google:', error);  // Manejo de errores
+      console.error('Error al iniciar sesión con Google:', error);  
       throw error;
     }
   }
@@ -26,20 +26,20 @@ export class AuthService {
   // Cerrar sesión
   async logout() {
     try {
-      const auth = getAuth();  // Obtenemos la instancia de autenticación
-      await signOut(auth);  // Cierra la sesión del usuario
+      const auth = getAuth();  
+      await signOut(auth);  
       console.log('Usuario desconectado');
     } catch (error) {
-      console.error('Error al cerrar sesión:', error);  // Manejo de errores
+      console.error('Error al cerrar sesión:', error);  
     }
   }
 
   // Obtener el estado del usuario (observa los cambios del estado de autenticación)
   getUser(): Observable<User | null> {
-    const auth = getAuth();  // Obtenemos la instancia de autenticación
+    const auth = getAuth();  
     return new Observable<User | null>((observer) => {
       onAuthStateChanged(auth, (user) => {
-        observer.next(user);  // Emitimos el usuario cuando cambia el estado
+        observer.next(user);  
       });
     });
   }

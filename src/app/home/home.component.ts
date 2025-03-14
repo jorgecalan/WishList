@@ -1,101 +1,87 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { FirebaseService } from '../../services/firebase.service'; 
+import { FirebaseService } from '../../services/firebase.service';
 
 @Component({
   selector: 'app-home',
-  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  arrayproducts: any[] = [];  
-  user: any;                 
-  wishlist: Set<string> = new Set(); // Guardamos solo los IDs en un Set
+  arrayproducts: any[] = [];
+  user: any;
 
   constructor(
-    private authService: AuthService, 
-    private firebaseService: FirebaseService,  
-    private cdr: ChangeDetectorRef
+    private authService: AuthService,
+    private firebaseService: FirebaseService,
   ) {}
 
-  async ngOnInit() {
-    this.authService.getUser().subscribe(async user => {
-        if (user) {
-            this.user = user;
-
-            try {
-                // 1️⃣ Obtener la wishlist PRIMERO
-                const wishlist = await this.firebaseService.getWishlist(user.uid);
-                this.wishlist = new Set(wishlist.map(item => item.id)); // Convertir a Set para búsqueda rápida
-
-                // 2️⃣ Obtener los productos
-                this.arrayproducts = await this.firebaseService.getProducts();
-
-                // 3️⃣ Marcar productos que estén en la wishlist
-                this.arrayproducts.forEach(product => {
-                    product.addedToWishList = this.wishlist.has(product.id);
-                });
-
-                this.cdr.detectChanges(); // Forzar actualización de la vista
-            } catch (error) {
-                console.error("❌ Error cargando datos:", error);
-            }
-        } else {
-            console.log('No authenticated user');
-            this.user = null;
-            this.arrayproducts.forEach(product => product.addedToWishList = false);
-        }
+  
+  ngOnInit() {   //Inicializa el componente y carga los datos si el usuario está autenticado  
+    this.authService.getUser().subscribe(user => {
+      this.user = user || null;
+      this.user ? this.loadProductsAndWishlist() : this.resetProducts();
     });
-}
-
-
-
-  async handleAddWishList(product: any) {
-    if (this.user) {
-      try {
-        await this.firebaseService.addToWishlist(this.user.uid, product);
-        product.addedToWishList = true;
-        this.wishlist.add(product.id);
-      } catch (error) {
-        console.error('❌ Error agregando al wishlist:', error);
-      }
-    } else {
-      alert('⚠️ Por favor, inicie sesión para agregar productos a Favoritos.');
-    }
   }
 
-  async handleRemoveWishList(product: any) {
-    if (this.user) {
-      try {
-        await this.firebaseService.removeFromWishlist(this.user.uid, product.id);
-        product.addedToWishList = false;
-        this.wishlist.delete(product.id);
-      } catch (error) {
-        console.error('❌ Error eliminando del wishlist:', error);
-      }
-    } else {
-      alert('⚠️ Por favor, inicie sesión para quitar productos de Favoritos.');
-    }
-  }
-
-  async loginWithGoogle() {
+  async loadProductsAndWishlist() {  //Obtiene los productos y la wishlist del usuario para sincronizarlos.
     try {
-      const user = await this.authService.loginWithGoogle();
-      this.user = user;
-      console.log('Usuario autenticado:', user);
+      this.arrayproducts = (await this.firebaseService.getProducts()).map(p => ({
+        ...p,
+        addedToWishList: false
+      }));
+
+      if (!this.arrayproducts.length) return console.log('⚠️ No hay productos.');
+
+      const wishlist = await this.firebaseService.getWishlist(this.user.uid);
+      if (!wishlist.length) return console.log('📌 No hay wishlist.');
+
+      const wishlistIds = new Set(wishlist.map(item => item.id));
+      this.arrayproducts.forEach(p => (p.addedToWishList = wishlistIds.has(p.id)));
+
+      console.log('✅ Productos sincronizados.');
     } catch (error) {
-      console.error('Error al iniciar sesión con Google:', error);
+      console.error("❌ Error cargando datos:", error);
     }
   }
 
-  async logout() {
+  async toggleWishlist(product: any, add: boolean) { //Agrega o elimina un producto de la wishlist según su estado.
+    if (!this.user) return alert('⚠️ Debes iniciar sesión.');
+
+    try {
+      add 
+        ? await this.firebaseService.addToWishlist(this.user.uid, product)
+        : await this.firebaseService.removeFromWishlist(this.user.uid, product.id);
+
+      product.addedToWishList = add;
+      console.log(`✅ Producto ${add ? 'agregado a' : 'eliminado de'} wishlist.`);
+    } catch (error) {
+      console.error(`❌ Error al ${add ? 'agregar' : 'eliminar'} de wishlist:`, error);
+    }
+  }
+
+  async loginWithGoogle() { //Inicia sesión con Google y carga los productos y la wishlist.
+    try {
+      this.user = await this.authService.loginWithGoogle();
+      console.log('✅ Usuario autenticado.');
+      this.loadProductsAndWishlist();
+    } catch (error) {
+      console.error('❌ Error al iniciar sesión:', error);
+    }
+  }
+
+  async logout() {  //Cierra sesión y limpia los datos del usuario y los productos.
     await this.authService.logout();
+    this.resetProducts();    
+    console.log('🔴 Usuario desconectado.');
+  }
+
+  private resetProducts() { //Limpia la información del usuario y marca todos los productos como no añadidos a la wishlist.
     this.user = null;
-    this.arrayproducts.forEach(product => product.addedToWishList = false);
-    console.log('Usuario desconectado');
+    this.arrayproducts.forEach(p => (p.addedToWishList = false, this.firebaseService.refreshPage()));
+    
   }
 }

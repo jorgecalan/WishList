@@ -1,88 +1,77 @@
-import { Injectable, inject } from '@angular/core';
-import { Database, ref, get, child } from '@angular/fire/database'; // Realtime Database
-import { Firestore, collection, doc, setDoc, getDocs, deleteDoc, collectionData } from '@angular/fire/firestore'; // Firestore
-import { Observable, of } from 'rxjs';
+import { Injectable} from '@angular/core';
+import { Database, ref, get, child } from '@angular/fire/database';
+import { Firestore, collection, doc, setDoc, getDocs, deleteDoc } from '@angular/fire/firestore';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirebaseService {
-  private db = inject(Database); 
-  private firestore = inject(Firestore); 
-  wishlist$: Observable<any[]> = of([]);
+  constructor(
+    private db: Database, 
+    private firestore: Firestore,
+    private router: Router
+  ) {}
 
-  // Obtener los productos desde Realtime Database
-  async getProducts(): Promise<any[]> {
-    const dbRef = ref(this.db);
+  async getProducts(): Promise<any[]> {  //Obtiene la lista de productos desde Realtime Database.
     try {
-      const snapshot = await get(child(dbRef, 'productos')); 
-      if (snapshot.exists()) {
-        return Object.values(snapshot.val()); 
-      } else {
-        console.log('No se encontraron productos');
-        return [];
-      }
+      const snapshot = await get(child(ref(this.db), 'productos'));
+      return snapshot.exists() ? snapshot.val() : [];
     } catch (error) {
-      console.error('Error obteniendo productos:', error);
+      console.error('❌ Error obteniendo productos:', error);
       return [];
     }
   }
 
-  // Guardar un artículo en Firestore
-  async addToWishlist(userId: string, product: any): Promise<void> {
-    if (!product || !product.id) {
-        console.error("❌ Error: El producto no tiene ID válido", product);
-        return;
+  async addToWishlist(userId: string, product: any): Promise<void> { //Agrega un producto a la wishlist del usuario en Firestore.
+    if (!product?.id) {
+      console.error("❌ Error: Producto sin ID válido", product);
+      return;
     }
-
-    const productId = String(product.id); 
-    const wishlistRef = doc(this.firestore, `wishlists/${userId}/items/${productId}`);
 
     try {
-        await setDoc(wishlistRef, {
-            id: productId,
-            name: product.name || 'Producto sin nombre',
-            price: product.price || 0,
-            description: product.description || '',
-            imageUrl: product.imageUrl || 'assets/default.jpg',
-            timestamp: new Date().toISOString()
-        });
-
-        console.log("✅ Producto agregado a wishlist:", product);
+      await setDoc(doc(this.firestore, `wishlists/${userId}/items/${product.id}`), {
+        id: product.id,
+        name: product.name || 'Producto sin nombre',
+        price: product.price || 0,
+        description: product.description || '',
+        imageUrl: product.imageUrl || 'assets/default.jpg',
+        timestamp: new Date().toISOString()
+      });
+      console.log("✅ Producto agregado a wishlist:", product);
     } catch (error) {
-        console.error("❌ Error agregando al wishlist:", error);
+      console.error("❌ Error agregando a wishlist:", error);
     }
-}
+  }
 
-
-  // Obtener los artículos de la wishlist de Firestore
-  async getWishlist(userId: string): Promise<any[]> {
-    const wishlistRef = collection(this.firestore, `wishlists/${userId}/items`);
-
+  async getWishlist(userId: string): Promise<any[]> { //Obtiene la wishlist del usuario desde Firestore.
     try {
-        const snapshot = await getDocs(wishlistRef);
-        return snapshot.docs.map(doc => doc.data()); 
+      const snapshot = await getDocs(collection(this.firestore, `wishlists/${userId}/items`));
+      return snapshot.docs.map(doc => doc.data());
     } catch (error) {
-        console.error("❌ Error obteniendo la wishlist:", error);
-        return [];
+      console.error("❌ Error obteniendo wishlist:", error);
+      return [];
     }
-}
+  }
 
-
-  // Eliminar un artículo de la wishlist en Firestore
-  async removeFromWishlist(userId: string, productId: string): Promise<void> {
-    if (!productId) {
-        console.error("❌ Error: El ID del producto es inválido.");
-        return;
-    }
-
-    const wishlistRef = doc(this.firestore, `wishlists/${userId}/items/${productId}`);
+  async removeFromWishlist(userId: string, productId: string): Promise<void> { //Elimina un producto de la wishlist del usuario en Firestore.
     try {
-        await deleteDoc(wishlistRef);
-        console.log("✅ Producto eliminado del wishlist:", productId);
+      await deleteDoc(doc(this.firestore, `wishlists/${userId}/items/${productId}`));
+      console.log(`✅ Producto ${productId} eliminado de wishlist`);
     } catch (error) {
-        console.error("❌ Error eliminando del wishlist:", error);
+      console.error("❌ Error eliminando de wishlist:", error);
     }
-}
-}
+  }
 
+  //Sincroniza los productos con la wishlist del usuario.
+  async syncWishlistWithProducts(userId: string, arrayProducts: any[]): Promise<void> {
+    const wishlistIds = new Set((await this.getWishlist(userId)).map(item => item.id));
+    arrayProducts.forEach(product => product.addedToWishList = wishlistIds.has(product.id));
+  }
+
+  refreshPage() { // Acualizar la pagina
+    this.router.navigate([this.router.url]).then(() => {
+      window.location.reload();
+    });
+  }
+}
