@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { Observable, of } from 'rxjs';
 import { FirebaseService } from '../../services/firebase.service'; 
 
 @Component({
@@ -15,8 +14,7 @@ import { FirebaseService } from '../../services/firebase.service';
 export class HomeComponent implements OnInit {
   arrayproducts: any[] = [];  
   user: any;                 
-  wishlist$: Observable<any> = new Observable(); 
-
+  wishlist: Set<string> = new Set(); // Guardamos solo los IDs en un Set
 
   constructor(
     private authService: AuthService, 
@@ -24,68 +22,66 @@ export class HomeComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
-    // Obtener productos desde Realtime Database usando FirebaseService
-    this.firebaseService.getProducts().then(products => {
-      this.arrayproducts = products.map(product => ({
-        ...product,
-        addedToWishList: false 
-      }));
+  async ngOnInit() {
+    this.authService.getUser().subscribe(async user => {
+        if (user) {
+            this.user = user;
+
+            try {
+                // 1️⃣ Obtener la wishlist PRIMERO
+                const wishlist = await this.firebaseService.getWishlist(user.uid);
+                this.wishlist = new Set(wishlist.map(item => item.id)); // Convertir a Set para búsqueda rápida
+
+                // 2️⃣ Obtener los productos
+                this.arrayproducts = await this.firebaseService.getProducts();
+
+                // 3️⃣ Marcar productos que estén en la wishlist
+                this.arrayproducts.forEach(product => {
+                    product.addedToWishList = this.wishlist.has(product.id);
+                });
+
+                this.cdr.detectChanges(); // Forzar actualización de la vista
+            } catch (error) {
+                console.error("❌ Error cargando datos:", error);
+            }
+        } else {
+            console.log('No authenticated user');
+            this.user = null;
+            this.arrayproducts.forEach(product => product.addedToWishList = false);
+        }
     });
+}
 
-    // Obtener el wishlist del usuario desde Firestore
-    this.authService.getUser().subscribe(user => {
-      if (user) {
-        this.user = user;
-        this.firebaseService.getWishlist(user.uid).then(wishlist => {  
-          this.wishlist$ = of(wishlist); 
-          
-          // Marcar los productos en la wishlist
-          this.arrayproducts.forEach(product => {
-            product.addedToWishList = wishlist.some((item: any) => item.id === product.id);
-          });
 
-          this.cdr.detectChanges(); 
-        });
-      } else {
-        console.log('No authenticated user');
-        this.user = null;
-      }
-    });
-  }
 
-  // Agregar producto al wishlist usando FirebaseService
   async handleAddWishList(product: any) {
     if (this.user) {
-      product.addedToWishList = true;
       try {
         await this.firebaseService.addToWishlist(this.user.uid, product);
-        console.log('✅ Producto agregado a wishlist');
+        product.addedToWishList = true;
+        this.wishlist.add(product.id);
       } catch (error) {
         console.error('❌ Error agregando al wishlist:', error);
       }
     } else {
-      alert('⚠️ Por favor, inicie sesión para agregar productos a su lista de deseos.');
-    }
-}
-
-
-  // Eliminar producto del wishlist usando FirebaseService
-  async handleRemoveWishList(product: any) {
-    if (this.user) {
-      product.addedToWishList = false;
-      try {
-        await this.firebaseService.removeFromWishlist(this.user.uid, product.id);
-        console.log('Producto eliminado del wishlist');
-      } catch (error) {
-        console.error('Error eliminando del wishlist:', error);
-      }
-    } else {
-      alert('Por favor, inicie sesión para quitar productos de su lista de deseos.');
+      alert('⚠️ Por favor, inicie sesión para agregar productos a Favoritos.');
     }
   }
 
-  // Función para iniciar sesión con Google
+  async handleRemoveWishList(product: any) {
+    if (this.user) {
+      try {
+        await this.firebaseService.removeFromWishlist(this.user.uid, product.id);
+        product.addedToWishList = false;
+        this.wishlist.delete(product.id);
+      } catch (error) {
+        console.error('❌ Error eliminando del wishlist:', error);
+      }
+    } else {
+      alert('⚠️ Por favor, inicie sesión para quitar productos de Favoritos.');
+    }
+  }
+
   async loginWithGoogle() {
     try {
       const user = await this.authService.loginWithGoogle();
@@ -96,10 +92,10 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  // Función para cerrar sesión
   async logout() {
     await this.authService.logout();
     this.user = null;
+    this.arrayproducts.forEach(product => product.addedToWishList = false);
     console.log('Usuario desconectado');
   }
 }

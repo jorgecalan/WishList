@@ -31,11 +31,16 @@ export class WishlistComponent implements OnInit {
   }
 
   // Método para cargar la wishlist
+
+
   loadWishlist(): void {
     if (this.user) {
-      this.wishlist$ = from(this.FirebaseService.getWishlist(this.user.uid));
+      this.FirebaseService.getWishlist(this.user.uid).then(wishlist => {
+        this.wishlist$ = of(wishlist); // Ahora wishlist es un array con productos completos
+      });
     }
   }
+  
 
   // Método para eliminar un producto de la wishlist
   handleRemoveWishList(product: any): void {

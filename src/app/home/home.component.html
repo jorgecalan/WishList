@@ -6,18 +6,18 @@
     <section id="menu">
         <h2><strong>Nuestros Productos</strong></h2>
 
-        <!-- Sección de inicio de sesión -->
-        <div *ngIf="!user">  
-            <button (click)="loginWithGoogle()">Iniciar sesión con Google</button>
+       
+        <div id="Boxbutton" *ngIf="!user">  
+            <button class="GoogleButton" (click)="loginWithGoogle()">Iniciar sesión con Google</button>
         </div>
         
-        <!-- Sección de bienvenida y logout -->
-        <div *ngIf="user">
-            <h3>Bienvenido, {{ user.displayName }}</h3>
-            <button (click)="logout()">Cerrar sesión</button>
+       
+        <div id="Boxbutton" *ngIf="user">
+            <h3><strong>Bienvenido, {{ user.displayName }}</strong></h3>
+            <button class="GoogleButton" (click)="logout()">Cerrar sesión</button>
         </div>
 
-        <!-- Contenedor de productos -->
+        
         <div class="products-container">
             <div *ngFor="let product of arrayproducts; let i = index" class="product-card">
                 <img [src]="product.imageUrl" alt="{{ product.name }}">
@@ -25,9 +25,14 @@
                 <p>{{ product.description }}</p>
                 <p>{{ product.price }}</p>    
 
-                <!-- Icono para agregar al wishlist -->
-                <i *ngIf="product.addedToWishList" class="fas fa-heart" (click)="handleRemoveWishList(product)"></i>
-                <i *ngIf="!product.addedToWishList" class="far fa-heart" (click)="handleAddWishList(product)"></i>
+                
+                <button (click)="handleAddWishList(product)" *ngIf="!product.addedToWishList">
+                    <i class="far fa-heart"></i> <!-- Corazón vacío -->
+                </button>
+                <button (click)="handleRemoveWishList(product)" *ngIf="product.addedToWishList">
+                    <i class="fas fa-heart"></i> <!-- Corazón lleno -->
+                </button>
+                
             </div>
         </div>
     </section>       

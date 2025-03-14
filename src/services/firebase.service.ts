@@ -58,15 +58,16 @@ export class FirebaseService {
   // Obtener los artículos de la wishlist de Firestore
   async getWishlist(userId: string): Promise<any[]> {
     const wishlistRef = collection(this.firestore, `wishlists/${userId}/items`);
-    this.wishlist$ = collectionData(wishlistRef, { idField: 'id' });
+
     try {
-      const snapshot = await getDocs(wishlistRef);
-      return snapshot.docs.map(doc => doc.data());
+        const snapshot = await getDocs(wishlistRef);
+        return snapshot.docs.map(doc => doc.data()); 
     } catch (error) {
-      console.error("❌ Error obteniendo la wishlist:", error);
-      return [];
+        console.error("❌ Error obteniendo la wishlist:", error);
+        return [];
     }
-  }
+}
+
 
   // Eliminar un artículo de la wishlist en Firestore
   async removeFromWishlist(userId: string, productId: string): Promise<void> {
@@ -79,9 +80,6 @@ export class FirebaseService {
     try {
         await deleteDoc(wishlistRef);
         console.log("✅ Producto eliminado del wishlist:", productId);
-        // Después de eliminar, actualizamos la lista de productos
-        // Llamar al método que obtiene la lista de wishlist
-        // Asegúrate de que `getWishlist()` devuelve una lista de productos actualizada
     } catch (error) {
         console.error("❌ Error eliminando del wishlist:", error);
     }
