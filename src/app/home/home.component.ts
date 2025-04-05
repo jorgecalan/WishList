@@ -19,15 +19,14 @@ export class HomeComponent implements OnInit {
     private firebaseService: FirebaseService,
   ) {}
 
-  
-  ngOnInit() {   //Inicializa el componente y carga los datos si el usuario está autenticado  
+  ngOnInit() {
     this.authService.getUser().subscribe(user => {
       this.user = user || null;
       this.user ? this.loadProductsAndWishlist() : this.resetProducts();
     });
   }
 
-  async loadProductsAndWishlist() {  //Obtiene los productos y la wishlist del usuario para sincronizarlos.
+  async loadProductsAndWishlist() {
     try {
       this.arrayproducts = (await this.firebaseService.getProducts()).map(p => ({
         ...p,
@@ -48,7 +47,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  async toggleWishlist(product: any, add: boolean) { //Agrega o elimina un producto de la wishlist según su estado.
+  async toggleWishlist(product: any, add: boolean) {
     if (!this.user) return alert('⚠️ Debes iniciar sesión.');
 
     try {
@@ -63,7 +62,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  async loginWithGoogle() { //Inicia sesión con Google y carga los productos y la wishlist.
+  async loginWithGoogle() {
     try {
       this.user = await this.authService.loginWithGoogle();
       console.log('✅ Usuario autenticado.');
@@ -73,15 +72,29 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  async logout() {  //Cierra sesión y limpia los datos del usuario y los productos.
+  async logout() {
     await this.authService.logout();
-    this.resetProducts();    
+    this.resetProducts();
     console.log('🔴 Usuario desconectado.');
   }
 
-  private resetProducts() { //Limpia la información del usuario y marca todos los productos como no añadidos a la wishlist.
+  private resetProducts() {
     this.user = null;
-    this.arrayproducts.forEach(p => (p.addedToWishList = false, this.firebaseService.refreshPage()));
-    
+    this.arrayproducts.forEach(p => (p.addedToWishList = false));
+  }
+
+  // Nueva función para obtener el color de fondo
+  getFondoColor(color: string): string {
+    switch (color.toLowerCase()) {
+      case 'oro':
+        return '#d2b250'; // Mas vendido
+      case 'plata':
+        return '#c5ced4'; // Ventas normales
+      case 'bronce':
+        return '#c68651'; // Menos vendidos
+      default:
+        return '#FFFFFF'; // Por defecto
+    }
   }
 }
+

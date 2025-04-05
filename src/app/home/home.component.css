@@ -1,75 +1,161 @@
-#menu {
-    max-width: 1200px;
-    margin: auto;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f7;
+    color: #333;
+    padding: 20px;
+}
+
+.Welcome {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
     text-align: center;
-    margin-top: 125px;
+    background-color: #f4f6f7;
+    padding: 15px 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+    text-transform: capitalize;
+    transition: all 0.3s ease-in-out;
+}
+
+.Welcome strong {
+    color: #2980b9;
+    font-size: 1.8rem;
+}
+
+#menu {
+    max-width: 1500px;
+    margin: 0 auto;
 }
 
 h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    text-align: left;
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .products-container {
     display: flex;
-    flex-wrap: wrap; 
-    justify-content: center; 
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 20px;
 }
 
-/* Cada producto en su propia tarjeta */
 .product-card {
     background: #fff;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    width: 250px; 
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    width: 250px;
     text-align: center;
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     align-items: center;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    transform: translateY(0);
 }
 
-img {
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    border-color: #3498db;
+}
+
+.product-card img {
     width: 100%;
     height: auto;
-    border-radius: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
 }
 
-h4 {
-    font-size: 18px;
-    margin: 10px 0;
+.product-card h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
 }
 
-p {
-    font-size: 14px;
-    color: #555;
+.product-card p {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.5;
 }
 
+.product-card .price {
+    font-size: 1.2rem;
+    color: #e74c3c;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.title {
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    font-size: 28px;
+    color: #333;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 40px;
+}
 
 i {
     background: #007bff;
     color: white;
-    text-decoration: none;
-    padding: 6px 10px;
+    padding: 8px 12px;
     border-radius: 5px;
-    margin-top: 5px;
-    font-size: 14px;
-    width: auto;
+    font-size: 16px;
+    transition: background 0.3s ease;
+    cursor: pointer;
 }
 
 i:hover {
     background: #0056b3;
 }
+
 .fa-heart {
     cursor: pointer;
-    color: red;
+    color: #e74c3c;
 }
+
 #Boxbutton {
-    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
 }
-.GoogleButton:hover {
+
+.auth-btn {
+    background-color: #4285F4;
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.auth-btn:hover {
     background-color: #0056b3;
-    color: white
+}
+
+p {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
 }

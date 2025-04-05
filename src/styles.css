@@ -1,6 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'bootstrap/dist/css/bootstrap.min.css';
+@import url(https://fonts.googleapis.com/css2?family=Madimi+One&family=Playfair+Display+SC:ital,wght@1,700&family=Rubik+Doodle+Shadow&family=Rubik+Doodle+Triangles&display=swap);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
 
 
 html, body { height: 100%;}
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-image: url(../src/app/imagenes/fondo.jpg);}
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background: #FFFFFF; }

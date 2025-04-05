@@ -1,12 +1,23 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
    <div class="container">
         <div class="logo">
-            <h1>E-TIENDA LA DESPENSA</h1>
+            <h1 class="MainTitle">E-TIENDA LA DESPENSA</h1>
         </div>
         <nav class="menu">
-          <a routerLink="/home" routerLinkActive="active">Home</a>
-          <a routerLink="/mision" routerLinkActive="active">Misión</a>
-          <a routerLink="/vision" routerLinkActive="active">Visión</a>
-          <a routerLink="/wish" routerLinkActive="active">Articulos Guardados</a>
-        </nav>
+          <a routerLink="/home" routerLinkActive="active">INICIO</a>
+          <a routerLink="/mision" routerLinkActive="active">MISIÓN</a>
+          <a routerLink="/vision" routerLinkActive="active">VISIÓN</a>
+          <a routerLink="/wish" routerLinkActive="active">ARTICULOS GUARDADOS</a>
+          <a routerLink="/pedido" routerLinkActive="active">COTIZACION</a>
+          <div class="wrap">
+            <div class="search">
+              <input type="text" class="searchTerm" placeholder="Cual articulo buscas?">
+              <button type="submit" class="searchButton">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </nav>       
+        
     </div>
 <router-outlet></router-outlet>

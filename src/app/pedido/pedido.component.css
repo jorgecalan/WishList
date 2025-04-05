@@ -1,0 +1,67 @@
+.btn-custom {
+    background-color: #007bff; 
+    color: white; 
+    font-size: 16px; 
+    padding: 12px 30px; 
+    border: none; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+    width: auto; 
+  }
+  
+ 
+  .btn-custom:hover {
+    background-color: #0056b3; 
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); 
+    transform: translateY(-2px); 
+  }
+  
+ 
+  .btn-custom:active {
+    background-color: #004085; 
+    transform: translateY(0); 
+  }
+  
+  
+  form {
+    background-color: #f8f9fa; 
+    border-radius: 10px; 
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  }
+  
+  h2 {
+    font-size: 30px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  h4 {
+    font-size: 22px;
+    font-weight: normal;
+    color: #555;
+  }
+  
+  input[type="text"], input[type="email"], input[type="tel"], input[type="number"], textarea {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  }
+  
+  button.btn-outline-danger {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+  
+  h2 {
+    color: #007bff; 
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .form-label {
+    font-weight: 500;
+    color: #555;
+  }
+  

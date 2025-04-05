@@ -1,39 +1,38 @@
 <main>
     <section id="menu">
-        <h2><strong>Nuestros Productos</strong></h2>
-
-        <!-- Sección de autenticación -->
+    
         <ng-container *ngIf="user; else loginTemplate">
             <div id="Boxbutton">
-                <h3><strong>Bienvenido, {{ user.displayName }}</strong></h3>
+                <h3 class="Welcome"><strong>Bienvenido, {{ user.displayName }}</strong></h3>
                 <button class="auth-btn" (click)="logout()">Cerrar sesión</button>
             </div>
         </ng-container>
+        <h2 class="title"><strong>Nuestros Productos</strong></h2>
 
         <ng-template #loginTemplate>
             <div id="Boxbutton">
-                <button class="auth-btn" (click)="loginWithGoogle()">Inicia sesion con Google para ver nuestros productos</button>
+                <button class="auth-btn" (click)="loginWithGoogle()">Inicia sesión con Google para ver nuestros productos</button>
             </div>
         </ng-template>
 
-        <!-- Contenedor de productos -->
         <div class="products-container">
-            <div *ngFor="let product of arrayproducts" class="product-card">
+            <div *ngFor="let product of arrayproducts" 
+                 class="product-card" 
+                 [ngStyle]="{'background-color': getFondoColor(product.color)}">
                 <img [src]="product.imageUrl" [alt]="product.name">
                 <h4>{{ product.name }}</h4>
                 <p>{{ product.description }}</p>
-                <p>{{ product.price}}</p>    
+                <p>{{ product.price }}</p>    
 
-             
                 <i 
                     [class]="product.addedToWishList ? 'fas fa-heart' : 'far fa-heart'"
                     (click)="toggleWishlist(product, !product.addedToWishList)">
                 </i>
-
             </div>
         </div>
     </section>       
 </main>
+
 
 
 

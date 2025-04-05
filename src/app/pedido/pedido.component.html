@@ -1,0 +1,51 @@
+<title>Formulario de Cotización</title>
+
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Solicitud de Cotización</h2>
+
+        <h4 class="mb-3">Artículos a Cotizar</h4>
+        <div id="articulosCotizar" class="mb-4">
+            <div *ngFor="let pedido of articulosCotizar" class="mb-3">
+                <input type="text" class="form-control mb-2" [value]="pedido.name" readonly>                
+                <button (click)="buttonRemoveQuote(pedido)" type="button" class="btn btn-outline-danger btn-sm">
+                    Eliminar
+                </button>
+            </div>
+        </div>
+
+        <form>
+            <div class="mb-4">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" required placeholder="Ingresa tu nombre">
+            </div>
+
+            <div class="mb-4">
+                <label for="email" class="form-label">Correo Electrónico</label>
+                <input type="email" class="form-control" id="email" required placeholder="Ingresa tu correo electrónico">
+            </div>
+
+            <div class="mb-4">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input type="tel" class="form-control" id="telefono" required placeholder="Ingresa tu número de teléfono">
+            </div>
+
+            <div class="mb-4">
+                <label for="cantidad" class="form-label">Cantidad</label>
+                <input type="number" class="form-control" id="cantidad" min="1" required placeholder="Cantidad de productos">
+            </div>
+
+            <div class="mb-4">
+                <label for="mensaje" class="form-label">Mensaje</label>
+                <textarea class="form-control" id="mensaje" rows="4" placeholder="Escribe cualquier mensaje adicional"></textarea>
+            </div>
+
+            <div class="text-center">
+                <button (click)="checkUserBeforeCotizar()" type="submit" class="btn btn-custom btn-lg">Solicitar Cotización</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+
+

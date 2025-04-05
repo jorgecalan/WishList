@@ -8,6 +8,9 @@ import { routes } from './app/app.routes';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { enableProdMode } from '@angular/core';
 import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideHttpClient } from '@angular/common/http';
+import { importProvidersFrom } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -21,5 +24,7 @@ bootstrapApplication(AppComponent, {
     provideFirestore(() => getFirestore()),
     provideAuth(() => getAuth()),
     provideRouter(routes, withComponentInputBinding()), 
+    provideHttpClient(),
+    importProvidersFrom(FormsModule) 
   ],
 }).catch(err => console.error(err));

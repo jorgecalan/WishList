@@ -1,16 +1,20 @@
 import { Injectable} from '@angular/core';
 import { Database, ref, get, child } from '@angular/fire/database';
-import { Firestore, collection, doc, setDoc, getDocs, deleteDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, setDoc, getDocs, deleteDoc, writeBatch } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirebaseService {
+  private cotizacionSubject = new BehaviorSubject<string[]>([]); // Para almacenar los nombres de los productos para cotización
+  cotizacion$ = this.cotizacionSubject.asObservable(); // Observable para que otros componentes se suscriban
   constructor(
     private db: Database, 
     private firestore: Firestore,
-    private router: Router
+    private router: Router,
+    
   ) {}
 
   async getProducts(): Promise<any[]> {  //Obtiene la lista de productos desde Realtime Database.
@@ -22,6 +26,7 @@ export class FirebaseService {
       return [];
     }
   }
+  
 
   async addToWishlist(userId: string, product: any): Promise<void> { //Agrega un producto a la wishlist del usuario en Firestore.
     if (!product?.id) {
@@ -74,4 +79,44 @@ export class FirebaseService {
       window.location.reload();
     });
   }
-}
+
+  async addToCotizacion(userId: string, pedidoId: string, pedidoName: string, itemsToQuote: string[]): Promise<void> {
+    try {
+      const pedidoRef = doc(this.firestore, `cotizaciones/${userId}/pedidos/${pedidoId}`);
+  
+      // Almacenar el pedido con el nombre y los productos
+      await setDoc(pedidoRef, {
+        id: pedidoId,
+        name: pedidoName,
+        items: itemsToQuote,  // Guardamos el nombre de los productos
+        timestamp: new Date().toISOString()
+      });
+  
+      console.log('Pedido agregado a la cotización con productos');
+    } catch (error) {
+      console.error('Error agregando pedido a la cotización', error);
+    }
+  }
+  
+
+  async getCotizacion(userId: string): Promise<any[]> {
+    try {
+      const snapshot = await getDocs(collection(this.firestore, `cotizaciones/${userId}/pedidos`));
+      const cotizaciones = snapshot.docs.map(doc => doc.data());
+      console.log(cotizaciones); // Revisa qué datos se están obteniendo
+      return cotizaciones;
+    } catch (error) {
+      console.error("Error obteniendo cotización", error);
+      return [];
+    }
+  }  
+  async DeleteQuote(userId: string, pedidoId: string): Promise<void> {
+    try {
+      await deleteDoc(doc(this.firestore, `cotizaciones/${userId}/pedidos/${pedidoId}`));
+      console.log(`✅ Pedido ${pedidoId} eliminado de cotizaciones`);
+    } catch (error) {
+      console.error("❌ Error eliminando cotización:", error);
+    }
+  }
+  
+}  
